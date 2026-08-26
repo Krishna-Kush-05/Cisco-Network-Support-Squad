@@ -1,0 +1,58 @@
+case_02
+TOPOLOGY: topo_A
+FAULT_TYPE: vlan_mismatch
+SYMPTOM: PC1 cannot communicate correctly because its switch port is placed in the wrong VLAN.
+GROUND_TRUTH: PC1 is connected to switch port Fa0/2, which was changed from VLAN 20 to VLAN 10. PC1 should normally be in VLAN 20.
+
+--- EVIDENCE START ---
+
+Switch#show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/3, Fa0/4, Fa0/5, Fa0/6
+                                                Fa0/7, Fa0/8, Fa0/9, Fa0/10
+                                                Fa0/11, Fa0/12, Fa0/13, Fa0/14
+                                                Fa0/15, Fa0/16, Fa0/17, Fa0/18
+                                                Fa0/19, Fa0/20, Fa0/21, Fa0/22
+                                                Fa0/23, Fa0/24, Gig0/2
+10   USERS                            active    Fa0/1, Fa0/2
+20   SERVERS                          active
+1002 fddi-default                     active
+1003 token-ring-default               active
+1004 fddinet-default                  active
+1005 trnet-default                     active
+
+Switch#show interface switchport
+Name: Fa0/1
+Switchport: Enabled
+Administrative Mode: static access
+Operational Mode: static access
+Administrative Trunking Encapsulation: dot1q
+Operational Trunking Encapsulation: native
+Negotiation of Trunking: Off
+Access Mode VLAN: 10 (USERS)
+Trunking Native Mode VLAN: 1 (default)
+Voice VLAN: none
+Administrative private-vlan host-association: none
+Administrative private-vlan mapping: none
+Administrative private-vlan trunk native VLAN: none
+Administrative private-vlan trunk encapsulation: dot1q
+Operational private-vlan: none
+Trunking VLANs Enabled: All
+Pruning VLANs Enabled: 2-1001
+Capture Mode Disabled
+Capture VLANs Allowed: ALL
+Protected: false
+
+Switch#enable
+Switch#configure terminal
+Enter configuration commands, one per line. End with CNTL/Z.
+Switch(config)#interface fastEthernet 0/2
+Switch(config-if)#switchport access vlan 20
+Switch(config-if)#exit
+Switch(config)#end
+Switch#
+%SYS-5-CONFIG_I: Configured from console by console
+
+--- EVIDENCE END ---

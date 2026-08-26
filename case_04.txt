@@ -1,0 +1,45 @@
+case_04
+TOPOLOGY: topo_A
+FAULT_TYPE: gateway_mismatch
+SYMPTOM: PC1 cannot communicate correctly because its default gateway is incorrect.
+GROUND_TRUTH: PC1 belongs to VLAN 20 with IP address 192.168.20.10, but its default gateway is configured as 192.168.10.1. The correct gateway for VLAN 20 is 192.168.20.1.
+
+--- EVIDENCE START ---
+
+C:\>ipconfig /all
+
+FastEthernet0 Connection: (default port)
+
+   Connection-specific DNS Suffix..:
+   Physical Address................: 0001.C7D7.574C
+   Link-local IPv6 Address.........: FE80::201:C7FF:FE77:574C
+   IPv6 Address....................: ::
+   IPv4 Address....................: 192.168.20.10
+   Subnet Mask.....................: 255.255.255.0
+   Default Gateway.................: 192.168.10.1
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................:
+   DHCPv6 Client DUID..............: 00-01-00-01-2E-FE-56-27-00-01-C7-D7-57-4C
+   DNS Servers.....................: 0.0.0.0
+
+Router>show ip interface brief
+
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0     unassigned      YES unset  up                    up
+GigabitEthernet0/0.10  192.168.10.1    YES manual up                    up
+GigabitEthernet0/0.20  192.168.20.1    YES manual up                    up
+GigabitEthernet0/1     unassigned      YES unset  administratively down  down
+GigabitEthernet0/2     unassigned      YES unset  administratively down  down
+Vlan1                  unassigned      YES unset  administratively down  down
+
+Router>show ip interface brief
+
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0     unassigned      YES unset  up                    up
+GigabitEthernet0/0.10  192.168.10.1    YES manual up                    up
+GigabitEthernet0/0.20  192.168.20.1    YES manual up                    up
+GigabitEthernet0/1     unassigned      YES unset  administratively down  down
+GigabitEthernet0/2     unassigned      YES unset  administratively down  down
+Vlan1                  unassigned      YES unset  administratively down  down
+
+--- EVIDENCE END ---

@@ -1,0 +1,35 @@
+case_03
+TOPOLOGY: topo_A
+FAULT_TYPE: gateway_mismatch
+SYMPTOM: PC0 cannot communicate correctly because its default gateway is incorrect.
+GROUND_TRUTH: PC0 belongs to VLAN 10 with IP address 192.168.10.10, but its default gateway is configured as 192.168.20.1. The correct gateway for VLAN 10 is 192.168.10.1.
+
+--- EVIDENCE START ---
+
+C:\>ipconfig /all
+
+FastEthernet0 Connection: (default port)
+
+   Connection-specific DNS Suffix..:
+   Physical Address................: 0001.439D.A365
+   Link-local IPv6 Address.........: FE80::201:43FF:FE9D:A365
+   IPv6 Address....................: ::
+   IPv4 Address....................: 192.168.10.10
+   Subnet Mask.....................: 255.255.255.0
+   Default Gateway.................: 192.168.20.1
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................:
+   DHCPv6 Client DUID..............: 00-01-00-01-E2-70-71-D3-00-01-43-9D-A3-65
+   DNS Servers.....................: 0.0.0.0
+
+Router>show ip interface brief
+
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0     unassigned      YES unset  up                    up
+GigabitEthernet0/0.10  192.168.10.1    YES manual up                    up
+GigabitEthernet0/0.20  192.168.20.1    YES manual up                    up
+GigabitEthernet0/1     unassigned      YES unset  administratively down  down
+GigabitEthernet0/2     unassigned      YES unset  administratively down  down
+Vlan1                  unassigned      YES unset  administratively down  down
+
+--- EVIDENCE END ---
