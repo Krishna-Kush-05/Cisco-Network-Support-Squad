@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  netsage-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: netsage-ai-dashboard
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/app
+      - ./results:/app/results
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
