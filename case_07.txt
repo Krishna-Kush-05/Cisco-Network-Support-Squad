@@ -1,0 +1,58 @@
+CASE_ID: case_07
+TOPOLOGY: topo_C
+FAULT_TYPE: dhcp
+SYMPTOM: PC0 cannot reach the remote network because DHCP provides an incorrect default gateway.
+GROUND_TRUTH: DHCP service on Server0 is enabled, but the DHCP pool provides an incorrect default gateway of 192.168.10.254 instead of 192.168.10.1.
+
+--- EVIDENCE START ---
+
+C:\>ipconfig /all
+
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..:
+   Physical Address................: 00E0.B0B8.8C39
+   Link-local IPv6 Address.........: FE80::2E0:B0FF:FEB8:8C39
+   IPv6 Address....................: ::
+   IPv4 Address....................: 192.168.10.101
+   Subnet Mask.....................: 255.255.255.0
+   Default Gateway.................: ::
+                                     192.168.10.254
+   DHCP Servers....................: 192.168.10.2
+   DNS Servers.....................: ::
+                                     192.168.10.2
+
+C:\>ping 192.168.10.2
+
+Pinging 192.168.10.2 with 32 bytes of data:
+
+Reply from 192.168.10.2: bytes=32 time<1ms TTL=128
+Reply from 192.168.10.2: bytes=32 time<1ms TTL=128
+Reply from 192.168.10.2: bytes=32 time<1ms TTL=128
+Reply from 192.168.10.2: bytes=32 time<1ms TTL=128
+
+Ping statistics for 192.168.10.2:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)
+
+C:\>ping 192.168.2.10
+
+Pinging 192.168.2.10 with 32 bytes of data:
+
+Request timed out.
+Request timed out.
+Request timed out.
+Request timed out.
+
+Ping statistics for 192.168.2.10:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss)
+
+Server0 DHCP Configuration:
+DHCP: On
+Pool Name: serverPool
+Default Gateway: 192.168.10.254
+DNS Server: 192.168.10.2
+Start IP Address: 192.168.10.100
+Subnet Mask: 255.255.255.0
+Maximum Number of Users: 50
+
+--- EVIDENCE END ---
