@@ -255,9 +255,7 @@ def _check_missing_vlan(blocks: dict, case: Case) -> bool:
     if default_ports and non_default_vlans:
         # If the fault/symptom text mentions VLAN explicitly, treat any
         # access port stuck on VLAN 1 as suspicious.
-        if re.search(r"vlan", case.symptom, re.IGNORECASE) or re.search(
-            r"vlan", case.fault_type, re.IGNORECASE
-        ):
+        if re.search(r"vlan", case.symptom, re.IGNORECASE):
             return True
 
     return False
