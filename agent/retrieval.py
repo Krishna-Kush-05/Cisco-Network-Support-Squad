@@ -108,4 +108,4 @@ def retrieve_similar_cases(symptom: str, k: int = 3) -> List[Case]:
         
     # Sort descending by score
     scored.sort(key=lambda x: x[0], reverse=True)
-    return [c for score, c in scored[:k]]
+    return [c for score, c in scored if score > 0.0][:k]
