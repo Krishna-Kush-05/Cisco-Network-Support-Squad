@@ -33,7 +33,7 @@ except ImportError:
 # only looks at its own block of output, regardless of what order the
 # commands were pasted in or how many are concatenated together.
 _COMMAND_SPLIT_RE = re.compile(
-    r"(?im)^\s*\S*[#>]\s*(show\s+ip\s+interface\s+brief|show\s+interfaces?|"
+    r"(?im)^\s*(?:\S*[#>]\s*)?(show\s+ip\s+interface\s+brief|show\s+interfaces?|"
     r"show\s+vlan\s+brief|show\s+ip\s+route|show\s+access-lists?|"
     r"show\s+arp|ipconfig\s*/all)\s*$"
 )
