@@ -1,4 +1,4 @@
-CASE_ID: case_03
+CASE_ID: case_09
 TOPOLOGY: topo_C
 FAULT_TYPE: dhcp
 SYMPTOM: PC0 cannot obtain a valid IPv4 configuration from DHCP.
