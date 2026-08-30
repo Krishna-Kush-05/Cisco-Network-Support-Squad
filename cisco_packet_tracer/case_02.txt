@@ -1,0 +1,54 @@
+CASE_ID: case_02
+TOPOLOGY: topo_B
+FAULT_TYPE: bad_acl
+SYMPTOM: PC0 cannot reach PC1 at 192.168.2.10.
+GROUND_TRUTH: ACL 100 on Router0 incorrectly blocks traffic from 192.168.1.0/24 to 192.168.2.0/24.
+
+--- EVIDENCE START ---
+Cisco Packet Tracer PC Command Line 1.0
+C:\>ping 192.168.2.10
+
+Pinging 192.168.2.10 with 32 bytes of data:
+
+Reply from 192.168.1.1: Destination host unreachable.
+Reply from 192.168.1.1: Destination host unreachable.
+Reply from 192.168.1.1: Destination host unreachable.
+Reply from 192.168.1.1: Destination host unreachable.
+
+Ping statistics for 192.168.2.10:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+
+Router#show access-lists
+Extended IP access list 100
+    10 deny ip 192.168.1.0 0.0.0.255 192.168.2.0 0.0.0.255 (4 match(es))
+    20 permit ip any any
+
+Router#show ip interface gigabitEthernet 0/1
+GigabitEthernet0/1 is up, line protocol is up (connected)
+  Internet address is 10.0.0.1/30
+  Broadcast address is 255.255.255.255
+  Address determined by setup command
+  MTU is 1500 bytes
+  Helper address is not set
+  Directed broadcast forwarding is disabled
+  Outgoing access list is 100
+  Inbound  access list is not set
+  Proxy ARP is enabled
+  Security level is default
+  Split horizon is enabled
+  ICMP redirects are always sent
+  ICMP unreachables are always sent
+  ICMP mask replies are never sent
+  IP fast switching is disabled
+  IP fast switching on the same interface is disabled
+  IP Flow switching is disabled
+  IP Fast switching turbo vector
+  IP multicast fast switching is disabled
+  IP multicast distributed fast switching is disabled
+  Router Discovery is disabled
+  Router Discovery is disabled
+  IP output packet accounting is disabled
+  IP access violation accounting is disabled
+  --More--
+
+--- EVIDENCE END ---
