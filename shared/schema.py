@@ -25,6 +25,9 @@ class Case(BaseModel):
     symptom: str
     evidence_text: str
     ground_truth: str = ""
+    expected_osi_layer: str = ""
+    concept_tag: str = ""
+    severity: str = ""
 
 
 class RuleResult(BaseModel):
