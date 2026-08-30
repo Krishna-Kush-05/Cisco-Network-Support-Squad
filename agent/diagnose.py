@@ -49,7 +49,7 @@ def run_agent_diagnosis(case: Case, similar_cases: List[Case]) -> AgentDiagnosis
         ]
         evidence_snippet = "Interface reporting 'administratively down' in show ip interface brief."
 
-    elif re.search(r"vlan", symptom) or "vlan" in case.fault_type.lower() or re.search(r"vlan\s+1\b", evidence, re.IGNORECASE):
+    elif re.search(r"vlan", symptom) or re.search(r"vlan\s+1\b", evidence, re.IGNORECASE):
         root_cause = "VLAN misconfiguration — access port assigned to incorrect/default VLAN."
         osi_layer = "Layer 2 (Data Link)"
         confidence = 0.92
@@ -62,7 +62,7 @@ def run_agent_diagnosis(case: Case, similar_cases: List[Case]) -> AgentDiagnosis
         ]
         evidence_snippet = "Port VLAN assignment mismatch detected in switchport configuration."
 
-    elif re.search(r"mask|subnet", symptom) or "mask" in case.fault_type.lower():
+    elif re.search(r"mask|subnet", symptom):
         root_cause = "Subnet mask mismatch between connected interfaces or PC and gateway."
         osi_layer = "Layer 3 (Network)"
         confidence = 0.89
@@ -74,7 +74,7 @@ def run_agent_diagnosis(case: Case, similar_cases: List[Case]) -> AgentDiagnosis
         ]
         evidence_snippet = "Subnet mask parameter divergence across adjacent interface definitions."
 
-    elif re.search(r"gateway|default gateway", symptom) or "gateway" in case.fault_type.lower():
+    elif re.search(r"gateway|default gateway", symptom):
         root_cause = "Default gateway mismatch or unconfigured gateway on client host."
         osi_layer = "Layer 3 (Network)"
         confidence = 0.94
@@ -86,7 +86,7 @@ def run_agent_diagnosis(case: Case, similar_cases: List[Case]) -> AgentDiagnosis
         ]
         evidence_snippet = "Default gateway does not match any local router sub-interface IP."
 
-    elif re.search(r"route|routing|unreachable", symptom) or "route" in case.fault_type.lower():
+    elif re.search(r"route|routing|unreachable", symptom):
         root_cause = "Missing or incorrect static/dynamic route in routing table."
         osi_layer = "Layer 3 (Network)"
         confidence = 0.90
@@ -98,7 +98,7 @@ def run_agent_diagnosis(case: Case, similar_cases: List[Case]) -> AgentDiagnosis
         ]
         evidence_snippet = "Destination network prefix is absent from routing table."
 
-    elif re.search(r"acl|access-list|block|denied", symptom) or "acl" in case.fault_type.lower():
+    elif re.search(r"acl|access-list|block|denied", symptom):
         root_cause = "Overly restrictive or misconfigured Access Control List (ACL) filtering traffic."
         osi_layer = "Layer 3 / Layer 4 (Network/Transport)"
         confidence = 0.91
@@ -113,7 +113,7 @@ def run_agent_diagnosis(case: Case, similar_cases: List[Case]) -> AgentDiagnosis
     elif similar_cases:
         # Fall back to top retrieved case pattern
         top_case = similar_cases[0]
-        root_cause = f"Correlated with historical case {top_case.case_id}: {top_case.fault_type or top_case.ground_truth}"
+        root_cause = f"Correlated with historical case {top_case.case_id}: {top_case.ground_truth}"
         osi_layer = "Layer 3 (Network)"
         confidence = 0.85
         next_cmd = "show running-config"

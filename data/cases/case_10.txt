@@ -1,4 +1,4 @@
-CASE_ID: case_04
+CASE_ID: case_10
 TOPOLOGY: topo_C
 FAULT_TYPE: dns
 SYMPTOM: PC0 cannot resolve the hostname netsage.local.
