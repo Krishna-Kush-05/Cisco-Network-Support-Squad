@@ -14,6 +14,7 @@ Everything else in this file is internal and may be restructured freely.
 
 import re
 from collections import defaultdict
+import ipaddress
 
 try:
     from shared.schema import Case, RuleResult
@@ -157,15 +158,14 @@ def _check_wrong_mask(blocks: dict) -> bool:
 def _check_gateway_mismatch(blocks: dict) -> bool:
     """
     Flags if a PC's default gateway (from ipconfig /all) doesn't match
-    any router interface IP found in the router-side evidence.
+    any router interface IP found in the router-side evidence, or if the
+    gateway exists but isn't on the PC's own subnet.
     """
     pc_text = _get_block(blocks, "ipconfig")
     if not pc_text:
         return False
 
-    gw_match = re.search(
-        r"Default Gateway[.\s]*:\s*" + _IP_RE, pc_text, re.IGNORECASE
-    )
+    gw_match = re.search(r"Default Gateway[.\s]*:\s*" + _IP_RE, pc_text, re.IGNORECASE)
     if not gw_match:
         return False
     gateway_ip = gw_match.group(1)
@@ -176,11 +176,27 @@ def _check_gateway_mismatch(blocks: dict) -> bool:
     router_ips = set(re.findall(_IP_RE, router_text))
 
     if not router_ips:
-        # No router IP evidence to compare against — can't confirm a
-        # mismatch, so don't flag (avoid false positives).
         return False
 
-    return gateway_ip not in router_ips
+    pc_ip_match = re.search(r"IPv4 Address[.\s]*:\s*" + _IP_RE, pc_text, re.IGNORECASE)
+    pc_mask_match = re.search(r"Subnet Mask[.\s]*:\s*" + _IP_RE, pc_text, re.IGNORECASE)
+
+    if not pc_ip_match or not pc_mask_match:
+        return gateway_ip not in router_ips
+
+    pc_ip = pc_ip_match.group(1)
+    pc_mask = pc_mask_match.group(1)
+
+    try:
+        pc_net = ipaddress.IPv4Network(f"{pc_ip}/{pc_mask}", strict=False)
+        gw_addr = ipaddress.IPv4Address(gateway_ip)
+    except ValueError:
+        return gateway_ip not in router_ips
+
+    if gateway_ip in router_ips:
+        return gw_addr not in pc_net
+    else:
+        return True
 
 
 def _check_interface_down(blocks: dict) -> bool:
